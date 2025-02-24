@@ -1,0 +1,25 @@
+/* Estilos do botão flutuante */
+.btn-flutuante {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    border-radius: 50px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Contêiner das opções do botão */
+.floating-options {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    display: none; /* Escondido por padrão */
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Botões menores */
+.floating-options .btn {
+    border-radius: 50px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}

@@ -1,0 +1,30 @@
+<!-- Modal -->
+<div class="modal fade" id="modalDevolution" tabindex="-1" aria-labelledby="modalDevolutionLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalDevolutionLabel">Devolução do Livro</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Para realizar a devolução, você primeiro deve devolver o livro no mesmo lugar em que pegou, e após isso realizar a devolução no sistema!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Fechar</button>
+        <button name="confirm" type="button" class="btn btn-primary">Confirmar Devolução</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+   function ShowModalDevolution(url) {
+            const modal = new bootstrap.Modal(document.getElementById('modalDevolution'));
+            const elements =  modal._element.getElementsByTagName("button");
+            const btn_confirm = Array.from(elements).slice(-1)[0];
+            btn_confirm.onclick = ()=>{
+                window.location.href = url;
+            }
+            modal.show();
+    }
+</script>

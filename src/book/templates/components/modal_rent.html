@@ -1,0 +1,34 @@
+<!-- Modal -->
+<div class="modal fade" id="modalRent" tabindex="-1" aria-labelledby="modalRentLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalRentLabel">REGRAS DE USO DA BIBLIOTECA</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <div class="rule"><span>✔</span> Conferir a disponibilidade do exemplar desejado.</div>
+      <div class="rule"><span>✔</span> Os livros estão disponíveis para leitura nos horários de intervalo.</div>
+      <div class="rule"><span>✔</span> Os livros são numerados, e o registro pode ser realizado utilizando o número do livro.</div>
+      <div class="rule"><span>✔</span> Em caso de empréstimo, o prazo é de 15 dias, podendo prorrogar, sendo um livro por vez.</div>
+      <div class="rule"><span>✔</span> Ao devolver, colocar o livro na ordem para manter a organização.</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Fechar</button>
+        <button name="confirm" type="button" class="btn btn-primary">Confirmar Emprestimo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+   function ShowModalRent(url) {
+            const modal = new bootstrap.Modal(document.getElementById('modalRent'));
+            const elements =  modal._element.getElementsByTagName("button");
+            const btn_confirm = Array.from(elements).slice(-1)[0];
+            btn_confirm.onclick = ()=>{
+                window.location.href = url;
+            }
+            modal.show();
+    }
+</script>

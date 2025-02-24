@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load filter_rental %}
+{% load static %}
+
+{% block content %}
+<div class="card w-100">
+    <div class="card-body p-4">
+    <h5 class="card-title fw-semibold mb-4">Meus Alugueis</h5>
+    <div class="table-responsive">
+        <table class="table text-nowrap mb-0 align-middle">
+        <thead class="text-dark fs-4">
+            <tr>
+            <th class="border-bottom-0">
+                <i class="ti ti-photo"></i>
+            </th>
+            <th class="border-bottom-0">
+                <h6 class="fw-semibold mb-0">Livro</h6>
+            </th>
+            <th class="border-bottom-0">
+                <h6 class="fw-semibold mb-0">Data de Solicitação</h6>
+            </th>
+            <th class="border-bottom-0">
+                <h6 class="fw-semibold mb-0">Data de devolução</h6>
+            </th>
+                <th class="border-bottom-0">
+                <h6 class="fw-semibold mb-0">Situação</h6>
+            </th>
+            <th class="border-bottom-0">
+                <h6 class="fw-semibold mb-0">Ações</h6>
+            </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rental in rentals %}
+            <tr>
+                <td class="border-bottom-0">
+                    <img src="{{ rental.book.cover.url }}" width="50" class="card-img-book" alt="{{ book.title }}">
+                </td>
+                <td class="border-bottom-0">
+                    <a href="{% url 'book_detail' rental.book.slug %}">
+                    <h6 class="fw-semibold mb-1">{{ rental.book.title }}</h6>
+                    <span class="fw-normal">{{ rental.book.author }}</span>     
+                    </a>                     
+                </td>
+                <td class="border-bottom-0">
+                    <p class="mb-0 fw-normal">{{ rental.rental_date }}</p>
+                </td>
+                <td class="border-bottom-0">
+                    <p class="mb-0 fw-normal">{{ rental.deadline_date }}</p>
+                </td>
+                <td class="border-bottom-0">
+                    {% if rental.active %}
+                        <div class="d-flex align-items-center gap-2">
+                            {% if rental.calendar_days > 0 %}
+                                <span class="badge bg-primary rounded-3 fw-semibold">{{ rental.calendar_days }} dias para a entrega</span>
+                            {% else %}
+                                <span class="badge bg-danger rounded-3 fw-semibold">{{ rental.calendar_days|abs_value }} dias atrasados</span>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-danger rounded-3 fw-semibold">Entregue em {{ rental.return_date }}</span>
+                        </div>
+                    {% endif %}
+                </td>
+                <td class="border-bottom-0">
+                    {% if rental.active %}
+                        <div class="d-flex flex-column">
+                         <button type="button" onclick="ShowModalDevolution('{% url 'devolution_book' rental.pk %}')" class="btn btn-outline-info m-1">Marcar Devolução</button>
+                         <button type="button" class="btn btn-outline-warning m-1">Reportar Problema</button>
+                        </div>
+                    {% endif %}
+                </td>
+            </tr> 
+            {% endfor %}                
+        </tbody>
+        </table>
+    </div>
+    </div>
+</div>
+
+{% include 'components/modal_devolution.html' %}
+{% endblock %}
+

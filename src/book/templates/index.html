@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block includes %}
+    <link rel="stylesheet" href="{% static 'css/book.css' %}" />
+    <script src="{% static 'js/filter.js' %}"></script>
+{% endblock %}
+
+
+{% block content %}
+<div class="row align-items-center">
+    <!-- Campo de entrada de pesquisa -->
+    <div class="col-md-8">
+        <div class="input-group">
+            <input onkeydown="SearchFilter(event);" type="text" id="searchValue" class="form-control" id="searchInput" placeholder="Buscar..." aria-label="Buscar">
+            <button onclick="SearchFilter();" class="btn btn-outline-secondary" type="button" id="button-addon2">
+                <img src="{% static 'images/icons/search.svg' %}" width="16" alt="Ícone de pesquisa">
+            </button>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Categorias
+            </button>
+            <ul class="dropdown-menu">
+               {% for category in categories %}
+                    <li><button class="dropdown-item" onclick="AddParams('category', '{{ category }}')" >{{ category }}</button></li>
+               {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+<br>
+<div class="row align-items-center">
+    {% for letter in letter_filter %}
+        <button onclick="AddParams('letter', '{{ letter }}')" class="letter-button" style="width: 20px;">{{ letter }}</button>
+    {% endfor %}
+</div>
+    {% if filters_used %}
+    <br>
+    
+        {% for filter in filters_used %}
+             <button onclick="RemoveFilter('{{ filter.name }}');" style="border: none;">
+            <div class="card d-inline-block w-auto badge text-bg-danger " style="margin-bottom: 0px;">
+                <h5 class="card-header" style="padding: 5px;"> <i class="ti ti-trash"></i></h5>
+                <div class="card-body" style="padding: 0px;    padding-bottom: 10px;">
+                        {{ filter.value }}
+           
+                </div>
+            </div>
+            </button>
+        {% endfor %}
+
+    {% endif %}
+
+<hr>
+
+{% if not filters_used %}
+    {# Se nenhum filtro foi aplicado, usa a paginação #}
+    {% with books_list=books.object_list %}
+        {% include 'components/books_list.html' with books=books_list %}
+    {% endwith %}
+
+    {# Paginação #}
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            {% if books.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" aria-label="First">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ books.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+
+            {# Paginação numérica #}
+            {% for num in books.paginator.page_range %}
+                <li class="page-item {% if books.number == num %}active{% endif %}">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+            {% endfor %}
+
+            {% if books.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ books.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ books.paginator.num_pages }}" aria-label="Last">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% else %}
+    {# Se filtros foram aplicados, exibe a lista de livros sem paginação #}
+    {% include 'components/books_list.html' with books=books %}
+{% endif %}
+
+{% endblock %}

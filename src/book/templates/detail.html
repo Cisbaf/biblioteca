@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block includes %}<link rel="stylesheet" href="{% static 'css/book.css' %}" />{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="content">
+
+            <div class="book-detail">
+                <img src="{{ book.cover.url }}" width="400" alt="{{ book.title }}">
+                <div class="book-header">
+                    <hr>
+                    <div>
+                        <div>
+                            <h1>{{ book.title }}</h1>
+                            <p>Author <strong>~{{ book.author }}</strong></p>
+                        </div>
+                            <div class="book-cellphone">
+                                 {% if book.available %}
+                                    <button type="button" onclick="ShowModalRent('{% url 'rent_book' book.slug %}')" class="btn btn-success m-1">Realizar Empréstimo</button>
+                                {% else %}
+                                    <div class="d-flex flex-column gap-2">
+                                    {% if book.who_rented == request.user %}
+                                        <span class="badge rounded-pill bg-warning">Você alugou o livro!<br>Retirar em {{ book.instructions }}</span>
+                                    {% else %}
+                                        <span class="badge rounded-pill bg-danger">O Livro ja está emprestado</span>
+                                    {% endif %}
+                                        <a href="#" class="card-link">Reportar Problema</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                    </div>
+                    <hr>
+                    <div>
+                        <h2>Descrição</h2>
+                        <div class="book-pc">
+                            <p>{{ book.description }}</p>
+                        </div>
+                        <div class="book-cellphone">
+                            <p>{{ book.short_desc }}</p>
+                            <a href="#">Ler mais</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="history-rental">
+                <div class="card">
+                    <div class="card-body book-pc">
+                      <h5 class="card-title">Status do Livro</h5>
+                        {% if book.available %}
+                            <button type="button" onclick="ShowModalRent('{% url 'rent_book' book.slug %}')" class="btn btn-success m-1">Alugar</button>
+                        {% else %}
+                            <div class="d-flex flex-column gap-2">
+                            {% if book.who_rented == request.user %}
+                                <span class="badge rounded-pill bg-warning">Você alugou o livro!<br>Retirar em {{ book.instructions }}</span>
+                            {% else %}
+                                <span class="badge rounded-pill bg-danger">O Livro ja está emprestado</span>
+                            {% endif %}
+                            <a href="#" class="card-link">Reportar Problema</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                  </div>
+                <div class="card w-100">
+                <div class="card-body p-4">
+                    <div class="mb-4">
+                        <h5 class="card-title fw-semibold">Ultimos Empréstimos</h5>
+                    </div>
+                    <ul class="timeline-widget mb-0 position-relative " style="max-height: 500px;overflow: auto;">
+                        {% if book.rentais_list.count > 0 %}
+                            {% for rental in book.rentais_list %}
+                                {% if rental.active %}
+                                <li class="timeline-item d-flex position-relative overflow-hidden">
+                                    <div class="timeline-time text-dark flex-shrink-0 text-start"><label>{{ rental.user.first_name}}<br>{{ rental.user.last_name}}</label></div>
+                                    <div class="timeline-badge-wrap d-flex flex-column align-items-center">
+                                    <span class="timeline-badge border-2 border border-warning flex-shrink-0 my-8"></span>
+                                    <span class="timeline-badge-border d-block flex-shrink-0"></span>
+                                    </div>
+                                    <div class="timeline-desc fs-3 text-dark mt-n1 fw-semibold">Previsão de Devolução <a class="text-primary d-block fw-normal">{{ rental.deadline_date }}</a>
+                                    </div>
+                                </li>
+                                {% else %}
+                            <li class="timeline-item d-flex position-relative overflow-hidden">
+                                    <div class="timeline-time text-dark flex-shrink-0 text-start"><label>{{ rental.user.first_name}}<br>{{ rental.user.last_name}}</label></div>
+                                    <div class="timeline-badge-wrap d-flex flex-column align-items-center">
+                                    <span class="timeline-badge border-2 border border-success flex-shrink-0 my-8"></span>
+                                    <span class="timeline-badge-border d-block flex-shrink-0"></span>
+                                    </div>
+                                    <div class="timeline-desc fs-3 text-dark mt-n1 fw-semibold">Devolvido <a class="text-primary d-block fw-normal">{{ rental.rental_date }}</a>
+                                    </div>
+                                </li>
+                                {% endif%}
+                            {% endfor %}
+                        {% else %}
+                            <span>Nenhum Registro</span>
+                        {% endif %}
+                    </ul>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% include 'components/modal_rent.html' %}
+<script>
+
+</script>
+{% endblock %}
