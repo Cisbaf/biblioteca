@@ -49,8 +49,6 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
-
-
 LOGIN_REDIRECT_URL = '/'  # Para onde o usuário será redirecionado após login
 LOGOUT_REDIRECT_URL = '/'  # Para onde o usuário será redirecionado após logout
 
