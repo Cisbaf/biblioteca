@@ -1,14 +1,13 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from .models import Book, Category
 from django.db.models import Q
 from django.db.models.functions import Lower
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
 
 
-
+@login_required(login_url='login')
 def books(request):
-    if not request.user.is_authenticated:
-        return redirect("login")
     if request.method == "GET":
         search = request.GET.get('search', None)
         letter = request.GET.get('letter', None)
@@ -41,12 +40,11 @@ def books(request):
 
     if not len(filters_used):
         page = request.GET.get('page', None)
-        paginator = Paginator(books, 10)
+        paginator = Paginator(books, 9)
         if page:
             books = paginator.page(page)
         else:
             books = paginator.page(1)
-
 
     categories = Category.objects.all()
     letter_filter = [chr(i) for i in range(65, 91)]
@@ -58,6 +56,7 @@ def books(request):
     }
     return render(request, "index.html", context=context)
 
+@login_required(login_url='login')
 def detail(request, slug):
     book = Book.objects.get(slug=slug)
     context = {

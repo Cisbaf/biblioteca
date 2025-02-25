@@ -24,11 +24,12 @@
                                 {% else %}
                                     <div class="d-flex flex-column gap-2">
                                     {% if book.who_rented == request.user %}
-                                        <span class="badge rounded-pill bg-warning">Você alugou o livro!<br>Retirar em {{ book.instructions }}</span>
-                                    {% else %}
+                                        <span class="badge rounded-pill bg-warning">Emprestimo Realizado!<br>
+                                            {% if book.instructions %} Retirar em {{ book.instructions }} {% endif %}
+                                        </span>                                    {% else %}
                                         <span class="badge rounded-pill bg-danger">O Livro ja está emprestado</span>
                                     {% endif %}
-                                        <a href="#" class="card-link">Reportar Problema</a>
+                                        <button onclick="OpenTicket(`{% url 'ticket_create_book' book.pk %}}`)" class="btn-link">Reportar Problema</button>
                                     </div>
                                 {% endif %}
                             </div>
@@ -51,15 +52,17 @@
                     <div class="card-body book-pc">
                       <h5 class="card-title">Status do Livro</h5>
                         {% if book.available %}
-                            <button type="button" onclick="ShowModalRent('{% url 'rent_book' book.slug %}')" class="btn btn-success m-1">Alugar</button>
+                            <button type="button" onclick="ShowModalRent('{% url 'rent_book' book.slug %}')" class="btn btn-success m-1">Realizar Empréstimo</button>
                         {% else %}
                             <div class="d-flex flex-column gap-2">
                             {% if book.who_rented == request.user %}
-                                <span class="badge rounded-pill bg-warning">Você alugou o livro!<br>Retirar em {{ book.instructions }}</span>
+                                <span class="badge rounded-pill bg-warning">Emprestimo Realizado!<br>
+                                    {% if book.instructions %} Retirar em {{ book.instructions }} {% endif %}
+                                </span>
                             {% else %}
                                 <span class="badge rounded-pill bg-danger">O Livro ja está emprestado</span>
                             {% endif %}
-                            <a href="#" class="card-link">Reportar Problema</a>
+                                <button onclick="OpenTicket(`{% url 'ticket_create_book' book.pk %}`)" class="btn-link">Reportar Problema</button>
                             </div>
                         {% endif %}
                     </div>

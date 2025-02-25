@@ -35,4 +35,5 @@ urlpatterns = [
     path('auth/', include(social_urls)),
     path('book/', include("book.urls")),
     path('rental/', include("rental.urls")),
+    path('ticket/', include("ticket.urls"))
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

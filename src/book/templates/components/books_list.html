@@ -1,19 +1,22 @@
+
+
 {% if books.count > 0 %}
     <div class="row">
         {% for book in books %}
-            <div class="col-md-4 mb-4">
+            <div class="col-md-4">
                 <div class="card">
                     {# Comentário opcional para disponibilidade #}
                     {% comment %} <span class="badge {% if book.available %}text-bg-success{% else %}text-bg-danger{% endif %} badge-book">{% if book.available %}Disponivel{% else %}Não Disponivel{% endif %}</span> {% endcomment %}
-                    
                     <a href="{% url 'book_detail' book.slug %}">
                         <img src="{{ book.cover.url }}" class="card-img-book" alt="{{ book.title }}">
                     </a>
+
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">{{ book.title }}</h5>
                         <p class="card-text">{{ book.short_desc }}</p>
                         <p class="mt-auto mb-1">~<em>{{ book.author }}</em></p>
                     </div>
+
                 </div>
             </div>
         {% endfor %}

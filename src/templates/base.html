@@ -4,6 +4,32 @@
 <head>
 {% include 'parciais/_head.html' %}
 {% block includes %}{% endblock %}
+<style>
+.btn-link {
+    border: none;
+    color: rgb(70, 156, 255);
+    background-color: transparent;
+}
+  /* Estilos para dispositivos móveis */
+  @media (max-width: 768px) {
+      .div-cellphone {
+          display: block;
+      }
+      .div-pc {
+          display: none;
+      }
+  }
+
+  /* Estilos para computadores */
+  @media (min-width: 769px) {
+      .div-cellphone {
+          display: none;
+      }
+      .div-pc {
+          display: block;
+      }
+  }
+</style>
 </head>
 
 <body>
@@ -130,9 +156,12 @@
             {% endfor %}
           {% endif %}
        {% block content %} {% endblock %}
+        {% include 'parciais/ticket_register.html' %}
       </div>
     </div>
   </div>
+
+  <script src="{% static 'js/ticket.js' %}"></script>
   <script src="{% static 'libs/jquery/dist/jquery.min.js'%}"></script>
   <script src="{% static 'libs/bootstrap/dist/js/bootstrap.bundle.min.js'%}"></script>
   <script src="{% static 'js/sidebarmenu.js' %}"></script>

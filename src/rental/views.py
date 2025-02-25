@@ -3,8 +3,10 @@ from .models import Rental, Book, ConfigRental
 from app.helper.http import previus
 from datetime import date, timedelta
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 
+@login_required(login_url='login')
 def history(request):
     my_rentals = Rental.objects.filter(user=request.user).order_by("-pk")
     context = {
@@ -12,6 +14,7 @@ def history(request):
     }
     return render(request, "rental_history.html", context=context)
 
+@login_required(login_url='login')
 def rent_book(request, slug):
     config = ConfigRental.objects.first()
     book = Book.objects.get(slug=slug)
@@ -28,6 +31,7 @@ def rent_book(request, slug):
         messages.success(request, f"Livro alugado com sucesso! ({book.title})")
     return redirect(previus(request, '/'))
 
+@login_required(login_url='login')
 def devolution_book(request, pk):
     rental = Rental.objects.get(pk=pk)
     rental.active = False
