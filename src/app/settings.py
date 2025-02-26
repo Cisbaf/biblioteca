@@ -27,9 +27,9 @@ SECRET_KEY = 'django-insecure-q)$2mbx%asi(g6dg&j$ss2^_4_gib9r_n^m*m1+w+5kg4&+smm
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-CORS_ALLOWED_ORIGINS = [
+CSRF_TRUSTED_ORIGINS = [
     "https://biblioteca.cisbaf.org.br",
-    "http://biblioteca.cisbaf.org.br",
+    "http://biblioteca.cisbaf.org.br"
 ]
 
 # Application definition
