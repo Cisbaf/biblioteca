@@ -41,8 +41,8 @@
                             <p>{{ book.description }}</p>
                         </div>
                         <div class="book-cellphone">
-                            <p>{{ book.short_desc }}</p>
-                            <a href="#">Ler mais</a>
+                            <p id="description">{{ book.short_desc }}</p>
+                            <button class="btn-link" id="btn-desc" onclick="ReajustDesc(`{{ book.short_desc }}`, `{{ book.description }}`)">Ler mais</button>
                         </div>
                     </div>
                 </div>
@@ -108,6 +108,18 @@
     </div>
 {% include 'components/modal_rent.html' %}
 <script>
+    var short_state = true;
+    function ReajustDesc(short, long) {
 
+        const btnDesc = document.getElementById("btn-desc");
+        const description = document.getElementById("description");
+        if (short_state) {
+            description.innerHTML = long;
+            short_state = false;
+        }else {
+            description.innerHTML = short;
+            short_state = true;
+        }
+    }
 </script>
 {% endblock %}
