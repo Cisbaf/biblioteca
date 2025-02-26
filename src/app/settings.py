@@ -27,7 +27,10 @@ SECRET_KEY = 'django-insecure-q)$2mbx%asi(g6dg&j$ss2^_4_gib9r_n^m*m1+w+5kg4&+smm
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-
+CORS_ALLOWED_ORIGINS = [
+    "https://biblioteca.cisbaf.org.br",
+    "http://biblioteca.cisbaf.org.br",
+]
 
 # Application definition
 
@@ -48,7 +51,6 @@ AUTHENTICATION_BACKENDS = [
     'social_core.backends.google.GoogleOAuth2',  # Recomendado
     'django.contrib.auth.backends.ModelBackend',  # Backend padrão do Django
 ]
-
 
 LOGIN_REDIRECT_URL = '/'  # Para onde o usuário será redirecionado após login
 LOGOUT_REDIRECT_URL = '/'  # Para onde o usuário será redirecionado após logout
