@@ -28,19 +28,28 @@ def auth_login(request):
         messages.error(request, "Usuário ou senha incorretas!")
         return redirect("login")
     
+
 def auth_register(request):
-    if not request.method == "POST":
-        messages.error(request, "Metodo não permitido!")
+    if request.method != "POST":
+        messages.error(request, "Método não permitido!")
         return redirect("login")
+
     post = request.POST
     name = post.get("name")
     last_name = post.get("last_name")
     email = post.get("email")
     password = post.get("password")
     password_confirm = post.get("password_confirm")
-    if password_confirm != password:
+
+    # Verifica se já existe um usuário com esse email
+    if User.objects.filter(username=email).exists():
+        messages.error(request, "Este e-mail já está cadastrado!")
+        return redirect("register")
+
+    if password != password_confirm:
         messages.error(request, "As senhas não coincidem!")
         return redirect("register")
+
     user = User.objects.create_user(
         username=email,
         email=email,
@@ -50,7 +59,8 @@ def auth_register(request):
     )
     user.backend = "django.contrib.auth.backends.ModelBackend"
     login_django(request, user)
-    return sobre(request, True)
+
+    return redirect("sobre")
 
 def logout(request):
     logout_django(request)
