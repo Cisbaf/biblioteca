@@ -1,0 +1,10 @@
+
+
+services:
+  biblioteca:
+    build:
+      context: .
+    ports:
+      - "${BIBLIOTECA_PORT}:80"
+    env_file:
+      .env
