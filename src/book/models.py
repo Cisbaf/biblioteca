@@ -1,22 +1,29 @@
 from django.db import models
 from django.utils.text import slugify
 
-
 class Category(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField("Nome da Categoria", max_length=100, unique=True)
+
+    class Meta:
+        verbose_name = "Categoria"
+        verbose_name_plural = "Categorias"
 
     def __str__(self):
         return self.name
 
 class Book(models.Model):
-    title = models.CharField(verbose_name="Titulo do Livro", max_length=255)
-    author = models.CharField(verbose_name="Autor do Livro", max_length=255)
-    description = models.TextField(verbose_name="Descrição do Livro", null=True, blank=True)
-    instructions = models.CharField(verbose_name="Instruções", null=True, blank=True, max_length=255)
-    cover = models.ImageField(verbose_name="Capa do Livro", upload_to="covers/")
-    public_data = models.DateField(verbose_name="Data de Publicação", null=True, blank=True)
+    title = models.CharField("Título do Livro", max_length=255)
+    author = models.CharField("Autor do Livro", max_length=255)
+    description = models.TextField("Descrição do Livro", null=True, blank=True)
+    instructions = models.CharField("Instruções", null=True, blank=True, max_length=255)
+    cover = models.ImageField("Capa do Livro", upload_to="covers/")
+    public_data = models.DateField("Data de Publicação", null=True, blank=True)
     category = models.ManyToManyField(verbose_name="Categoria do Livro", to=Category)
-    slug = models.SlugField(max_length=200, unique=True, blank=True)
+    slug = models.SlugField("Apelido", max_length=200, unique=True, blank=True)
+
+    class Meta:
+        verbose_name = "Livro"
+        verbose_name_plural = "Livros"
 
     def save(self, *args, **kwargs):
         if not self.slug:

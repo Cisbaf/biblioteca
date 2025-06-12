@@ -3,7 +3,7 @@ from .models import Ticket
 
 
 class AdminTicket(admin.ModelAdmin):
-    pass
+    list_display = ['book__title', 'title', 'description', 'user__username', 'created_at']
 
 
 admin.site.register(Ticket, AdminTicket)
