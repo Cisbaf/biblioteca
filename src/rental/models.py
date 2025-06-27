@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from book.models import Book
 from datetime import date
+from django.utils import timezone
 
 class ConfigRental(models.Model):
     return_days = models.IntegerField("Tempo de Devolução (dias)", default=30)
@@ -31,6 +32,39 @@ class Rental(models.Model):
         verbose_name = "Aluguel de Livro"
         verbose_name_plural = "Aluguéis de Livros"
 
+    def dias_de_atraso(self):
+        if not self.deadline_date:
+            return 0  # Sem data limite definida
+
+        if self.return_date:
+            atraso = (self.return_date - self.deadline_date).days
+        else:
+            hoje = timezone.now().date()
+            atraso = (hoje - self.deadline_date).days
+
+        return atraso if atraso > 0 else 0
+    
+    def status(self):
+        if not self.return_date:
+            if self.deadline_date and timezone.now().date() > self.deadline_date:
+                return "Em atraso"
+            return "Em andamento"
+        else:
+            if self.deadline_date and self.return_date > self.deadline_date:
+                return f"Devolvido com atraso de {(self.return_date - self.deadline_date).days} dias"
+            return "Devolvido no prazo"
+    
+    def status_time(self):
+        atraso = self.dias_de_atraso()
+        if self.return_date:
+            if atraso > 0:
+                return f"Devolvido com atraso de {atraso} dias"
+            else:
+                return "Devolvido no prazo"
+        else:
+            if atraso > 0:
+                return f"Em atraso há {atraso} dias"
+            return "Em andamento"
     @property
     def calendar_days(self):
         return (self.deadline_date - date.today()).days
