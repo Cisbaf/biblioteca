@@ -5,6 +5,9 @@ from django.db.models.functions import Lower
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 
+from django.db.models import Q, Count, Case, When, Value, IntegerField
+from django.db.models.functions import Lower
+from django.core.paginator import Paginator
 
 @login_required(login_url='login')
 def books(request):
@@ -16,7 +19,7 @@ def books(request):
     filters_used = []
     filters = Q()
     if search:
-        search_lower = search.lower()  # Normaliza a entrada do usuário para minúscula
+        search_lower = search.lower()
         filters &= (Q(title__icontains=search_lower) | 
                     Q(author__icontains=search_lower) | 
                     Q(description__icontains=search_lower))
@@ -29,22 +32,32 @@ def books(request):
 
     if category:
         category_lower = category.lower()
-        filters &= Q(category__name__iexact=category_lower)  # iexact = insensível a maiúsculas/minúsculas
+        filters &= Q(category__name__iexact=category_lower)
         filters_used.append({'name': 'category', 'value': category})
 
+    # Query base
     books = Book.objects.annotate(
         title_lower=Lower('title'),
         author_lower=Lower('author'),
         description_lower=Lower('description')
     ).filter(filters).distinct()
 
-    if not len(filters_used):
-        page = request.GET.get('page', None)
-        paginator = Paginator(books, 9)
-        if page:
-            books = paginator.page(page)
-        else:
-            books = paginator.page(1)
+    # Caso não tenha filtro -> aplica recomendação
+    if not filters_used:
+        books = books.annotate(
+            total_rentals=Count('rentals'),  # número de vezes que foi alugado
+            is_rented=Case(
+                When(rentals__active=True, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            )
+        ).order_by('is_rented', '-total_rentals')  
+        # 1º: livros não alugados (is_rented=0), depois os mais alugados
+
+    # Paginação
+    page = request.GET.get('page', 1)
+    paginator = Paginator(books, 9)
+    books = paginator.get_page(page)
 
     categories = Category.objects.all()
     letter_filter = [chr(i) for i in range(65, 91)]
