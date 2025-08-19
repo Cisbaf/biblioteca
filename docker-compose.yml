@@ -1,12 +1,18 @@
-
-
 services:
   biblioteca:
     build:
       context: .
     volumes:
       - ./src/media:/app/media
-    ports:
-      - "${BIBLIOTECA_PORT}:8000"
     env_file:
-      .env
+      - .env
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "${BIBLIOTECA_PORT}:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./src/media:/app/media
+    depends_on:
+      - biblioteca
