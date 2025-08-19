@@ -6,5 +6,7 @@ COPY /src .
 
 RUN pip install -r requirements.txt
 
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-CMD [ "python", "manage.py", "runserver", "0.0.0.0:80"]
+ENTRYPOINT ["/entrypoint.sh"]
