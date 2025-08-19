@@ -26,7 +26,9 @@
                                     {% if book.who_rented == request.user %}
                                         <span class="badge rounded-pill bg-warning">Emprestimo Realizado!<br>
                                             {% if book.instructions %} Retirar em {{ book.instructions }} {% endif %}
-                                        </span>                                    {% else %}
+                                        </span>
+                                        <a class="btn-link" href="{% url 'history' %}" style="text-align: center;">Realizar Devolução</a>
+                                    {% else %}
                                         <span class="badge rounded-pill bg-danger">O Livro ja está emprestado</span>
                                     {% endif %}
                                         <button onclick="OpenTicket(`{% url 'ticket_create_book' book.pk %}}`)" class="btn-link">Reportar Problema</button>
@@ -59,6 +61,7 @@
                                 <span class="badge rounded-pill bg-warning">Emprestimo Realizado!<br>
                                     {% if book.instructions %} Retirar em {{ book.instructions }} {% endif %}
                                 </span>
+                                <a class="btn-link" href="{% url 'history' %}" style="text-align: center;">Realizar Devolução</a>
                             {% else %}
                                 <span class="badge rounded-pill bg-danger">O Livro ja está emprestado</span>
                             {% endif %}
