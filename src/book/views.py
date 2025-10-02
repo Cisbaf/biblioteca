@@ -11,13 +11,13 @@ from django.core.paginator import Paginator
 
 @login_required(login_url='login')
 def books(request):
-    if request.method == "GET":
-        search = request.GET.get('search', None)
-        letter = request.GET.get('letter', None)
-        category = request.GET.get('category', None)
+    search = request.GET.get('search', None)
+    letter = request.GET.get('letter', None)
+    category = request.GET.get('category', None)
 
     filters_used = []
     filters = Q()
+    
     if search:
         search_lower = search.lower()
         filters &= (Q(title__icontains=search_lower) | 
@@ -35,32 +35,31 @@ def books(request):
         filters &= Q(category__name__iexact=category_lower)
         filters_used.append({'name': 'category', 'value': category})
 
-    # Query base
-    books = Book.objects.annotate(
+    books_qs = Book.objects.annotate(
         title_lower=Lower('title'),
         author_lower=Lower('author'),
         description_lower=Lower('description')
     ).filter(filters).distinct()
 
-    # Caso não tenha filtro -> aplica recomendação
+    # Se não houver filtro, aplicar recomendação
     if not filters_used:
-        books = books.annotate(
-            total_rentals=Count('rentals'),  # número de vezes que foi alugado
+        books_qs = books_qs.annotate(
+            total_rentals=Count('rentals'),
             is_rented=Case(
                 When(rentals__active=True, then=Value(1)),
                 default=Value(0),
                 output_field=IntegerField()
             )
-        ).order_by('is_rented', '-total_rentals')  
-        # 1º: livros não alugados (is_rented=0), depois os mais alugados
+        ).order_by('is_rented', '-total_rentals')
 
     # Paginação
     page = request.GET.get('page', 1)
-    paginator = Paginator(books, 9)
+    paginator = Paginator(books_qs, 9)
     books = paginator.get_page(page)
 
     categories = Category.objects.all()
     letter_filter = [chr(i) for i in range(65, 91)]
+
     context = {
         "letter_filter": letter_filter,
         "books": books,
